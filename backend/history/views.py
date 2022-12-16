@@ -13,6 +13,8 @@ from history.models import (
     InvalidScrapJobs,
 )
 from utils.models import GetDataResponse
+from django.conf import settings
+from django.http import HttpResponse
 
 
 class ScrapView(APIView):
@@ -34,3 +36,7 @@ class ScrapView(APIView):
         InvalidScrapJobs.objects.create(request_meta=request.META)
         return Response(status=400, data={})
 
+
+class LoaderIOView(APIView):
+    def get(self, request: HttpRequest) -> Response:
+        return HttpResponse(settings.LOADERIO_TOKEN)
