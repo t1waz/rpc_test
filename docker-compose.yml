@@ -37,6 +37,7 @@ services:
                     python main.py"
     env_file:
       - .envs
+    restart: always
     volumes:
       - ./scrap:/app
       - ./utils:/packages/rgs_utils
@@ -60,7 +61,6 @@ services:
       dockerfile: compose/nginx/Dockerfile
     volumes:
     - static:/static
-    - ./loaderio/loaderio
     ports:
       - 0.0.0.0:8000:8000
     depends_on:

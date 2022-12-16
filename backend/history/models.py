@@ -11,7 +11,7 @@ class ScrapResult(models.Model):
 
 
 class InvalidScrapJobs(models.Model):
-    uuid = models.UUIDField(default=uuid.uuid4, primary_key=True)\
+    uuid = models.UUIDField(default=uuid.uuid4, primary_key=True)
 
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     request_meta = models.JSONField()
