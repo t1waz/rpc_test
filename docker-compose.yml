@@ -1,0 +1,66 @@
+version: '3'
+
+
+volumes:
+  backend_data: {}
+  static: {}
+
+services:
+  app: &app
+    build:
+      context: .
+      dockerfile: compose/backend/Dockerfile
+    command: sh -c "bash /scripts/wait-for-it.sh --host=db --port=5432 &&
+                    bash /scripts/wait-for-it.sh --host=rabbit-mq --port=5672 &&
+                    python manage.py collectstatic --noinput &&
+                    python manage.py migrate"
+    env_file:
+      - .envs
+    volumes:
+    - static:/static
+    - ./backend:/app
+    - ./utils:/packages/rgs_utils
+    depends_on:
+      - db
+      - scrap
+      - rabbit-mq
+
+  backend:
+    <<: *app
+    command: python manage.py runserver 0.0.0.0:8000
+
+  scrap:
+    build:
+      context: .
+      dockerfile: compose/backend/Dockerfile
+    command: sh -c "bash /scripts/wait-for-it.sh --host=rabbit-mq --port=5672 &&
+                    python main.py"
+    env_file:
+      - .envs
+    volumes:
+      - ./scrap:/app
+      - ./utils:/packages/rgs_utils
+
+
+  db:
+    image: postgres:latest
+    volumes:
+      - backend_data:/var/lib/postgresql/data
+    env_file:
+      - .envs
+
+  rabbit-mq:
+    image: rabbitmq:latest
+    logging:
+      driver: none
+
+  nginx:
+    build:
+      context: .
+      dockerfile: compose/nginx/Dockerfile
+    volumes:
+    - static:/static
+    ports:
+      - 0.0.0.0:8000:8000
+    depends_on:
+      - app

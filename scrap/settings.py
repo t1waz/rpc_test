@@ -1,0 +1,7 @@
+import os
+
+
+RABBITMQ_HOST = os.getenv('RABBITMQ_HOST')
+RABBITMQ_PORT = os.getenv('RABBITMQ_PORT')
+
+SCRAP_RPC_QUEUE = os.getenv('SCRAP_RPC_QUEUE')
