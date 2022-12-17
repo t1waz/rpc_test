@@ -21,6 +21,9 @@ class RpcCommandClient:
             pika.ConnectionParameters(host=rabbit_mq_host, port=rabbit_mq_port)
         )
         self._ch = self._conn.channel()
+
+        self._ch.exchange_declare(exchange='topic_logs', exchange_type='topic')
+
         self._callback_q = self._ch.queue_declare(queue='', exclusive=True).method.queue
 
         self._ch.basic_consume(
@@ -35,15 +38,25 @@ class RpcCommandClient:
         self._response = None
         self._corr_id = str(uuid.uuid4())
 
+        # self._ch.basic_publish(
+        #     exchange='',
+        #     body=msg.to_bytes(),
+        #     routing_key=self.QUEUE_NAME,
+        #     properties=pika.BasicProperties(
+        #         reply_to=self._callback_q,
+        #         correlation_id=self._corr_id,
+        #     ),
+        # )
         self._ch.basic_publish(
-            exchange='',
+            exchange='topic_logs',
             body=msg.to_bytes(),
-            routing_key=self.QUEUE_NAME,
+            routing_key=f'test.{str(uuid.uuid4())}',
             properties=pika.BasicProperties(
                 reply_to=self._callback_q,
                 correlation_id=self._corr_id,
             ),
         )
+
         self._conn.process_data_events(time_limit=time_limit)
 
         if not self._response:
@@ -82,7 +95,16 @@ class RpcCommandServer:
         )
 
         channel = connection.channel()
-        channel.queue_declare(queue=cls.QUEUE_NAME)
-        channel.basic_qos(prefetch_count=100)
-        channel.basic_consume(queue=cls.QUEUE_NAME, on_message_callback=server.on_request)
+
+        channel.exchange_declare(exchange='topic_logs', exchange_type='topic')
+        result = channel.queue_declare('', exclusive=True)
+        queue_name = result.method.queue
+        channel.queue_bind(
+            exchange='topic_logs', queue=queue_name, routing_key='test.#')
+        channel.basic_consume(
+            queue=queue_name, on_message_callback=server.on_request, auto_ack=False)
+
+        # channel.queue_declare(queue=cls.QUEUE_NAME)
+        # channel.basic_qos(prefetch_count=100)
+        # channel.basic_consume(queue=cls.QUEUE_NAME, on_message_callback=server.on_request)
         channel.start_consuming()

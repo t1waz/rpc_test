@@ -16,9 +16,10 @@ class ScrapRpcCommandServer(RpcCommandServer):
     QUEUE_NAME = settings.SCRAP_RPC_QUEUE
 
     def handle_get_data(self, request: GetDataRequest) -> GetDataResponse:
-        response = requests.get('https://google.com')
+        # response = requests.get('https://google.com')
 
-        return GetDataResponse(is_valid=True, content=response.content)
+        return GetDataResponse(is_valid=True, content='aaaaa')
+        # return GetDataResponse(is_valid=True, content=response.content)
 
     def _dispatch_command(self, command: RpcCommand, **data) -> Optional[dict]:
         if command == RpcCommand.GET_DATA:
@@ -30,6 +31,7 @@ class ScrapRpcCommandServer(RpcCommandServer):
 
 
 if __name__ == '__main__':
+    print('start running')
     ScrapRpcCommandServer.run(
         rabbit_mq_host=settings.RABBITMQ_HOST, rabbit_mq_port=settings.RABBITMQ_PORT
     )

@@ -34,7 +34,7 @@ services:
       context: .
       dockerfile: compose/backend/Dockerfile
     command: sh -c "bash /scripts/wait-for-it.sh --host=rabbit-mq --port=5672 &&
-                    python main2.py"
+                    python main.py"
     env_file:
       - .envs
     restart: always
@@ -57,10 +57,10 @@ services:
     deploy:
         resources:
           limits:
-            cpus: 4
+            cpus: '4'
             memory: 8120M
           reservations:
-            cpus: 4
+            cpus: '4'
             memory: 8120M
 
   nginx:
