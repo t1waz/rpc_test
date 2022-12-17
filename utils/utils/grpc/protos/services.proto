@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+
+message LaunchUrlData {
+    map<string, string> params = 1;
+}
+
+message AuthResponse {
+    string msg = 1;
+}
+
+service ScrapService {
+    rpc AuthLaunchUrl(LaunchUrlData) returns (AuthResponse) {}
+}

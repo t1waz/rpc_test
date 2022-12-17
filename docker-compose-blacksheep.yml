@@ -21,6 +21,20 @@ services:
     depends_on:
       - db
 
+  scrap:
+    build:
+      context: .
+      dockerfile: compose/backend/Dockerfile
+    command: sh -c "bash /scripts/wait-for-it.sh --host=db --port=5432 &&
+                    python main.py"
+    env_file:
+      - .envs
+    volumes:
+    - ./grpc_scrap:/app
+    - ./utils:/packages/rgs_utils
+    depends_on:
+      - db
+
   db:
     image: postgres:latest
     volumes:
