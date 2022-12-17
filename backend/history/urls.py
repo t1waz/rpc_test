@@ -6,5 +6,5 @@ from history import views
 
 urlpatterns = [
     path('scrap/', views.ScrapView.as_view(), name='scrap'),
-    path(settings.LOADERIO_URL, views.LoaderIOView.as_view(), name='loaderio'),
+    path(f'/{settings.LOADERIO_TOKEN}', views.LoaderIOView.as_view(), name='loaderio'),
 ]
