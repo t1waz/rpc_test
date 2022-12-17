@@ -11,7 +11,7 @@ channel = grpc.insecure_channel('scrap:50051')
 stub = services_pb2_grpc.ScrapServiceStub(channel)
 
 
-@app.route(settings.LOADERIO_URL)
+@app.route(f'/{settings.LOADERIO_TOKEN}/')
 async def loader_io_token():
     return settings.LOADERIO_TOKEN
 

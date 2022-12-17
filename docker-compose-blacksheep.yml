@@ -42,7 +42,6 @@ services:
     env_file:
       - .envs
 
-
   nginx:
     build:
       context: .
