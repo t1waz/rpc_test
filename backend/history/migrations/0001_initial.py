@@ -8,14 +8,16 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
             name='InvalidScrapJobs',
             fields=[
-                ('uuid', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
+                (
+                    'uuid',
+                    models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False),
+                ),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('request_meta', models.JSONField()),
             ],
@@ -23,7 +25,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ScrapResult',
             fields=[
-                ('uuid', models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False)),
+                (
+                    'uuid',
+                    models.UUIDField(default=uuid.uuid4, primary_key=True, serialize=False),
+                ),
                 ('content', models.TextField(blank=True, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
             ],

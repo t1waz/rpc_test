@@ -83,6 +83,6 @@ class RpcCommandServer:
 
         channel = connection.channel()
         channel.queue_declare(queue=cls.QUEUE_NAME)
-        channel.basic_qos(prefetch_count=1)
+        channel.basic_qos(prefetch_count=100)
         channel.basic_consume(queue=cls.QUEUE_NAME, on_message_callback=server.on_request)
         channel.start_consuming()

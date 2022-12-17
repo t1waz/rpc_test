@@ -6,3 +6,4 @@ pydantic
 dependency-injector
 requests
 psycopg2
+gunicorn
